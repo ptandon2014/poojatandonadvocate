@@ -1144,6 +1144,13 @@ body { font-family: var(--font-body); color: var(--text-body); background: var(-
             </div>
           </li>
           <li class="contact-info-item reveal reveal-delay-2">
+            <div class="contact-info-icon">✉️</div>
+            <div>
+              <div class="contact-info-label">Email</div>
+              <div class="contact-info-value"><a href="mailto:p.tandon2014@gmail.com" style="color:var(--text-dark);text-decoration:none;">p.tandon2014@gmail.com</a></div>
+            </div>
+          </li>
+          <li class="contact-info-item reveal reveal-delay-2">
             <div class="contact-info-icon">🕐</div>
             <div>
               <div class="contact-info-label">Working Hours</div>
@@ -1166,20 +1173,20 @@ body { font-family: var(--font-body); color: var(--text-body); background: var(-
           <div class="form-row">
             <div class="form-group">
               <label>Full Name</label>
-              <input type="text" placeholder="Your full name" required>
+              <input type="text" id="cf-name" placeholder="Your full name" required>
             </div>
             <div class="form-group">
               <label>Phone Number</label>
-              <input type="tel" placeholder="+91 XXXXX XXXXX" required>
+              <input type="tel" id="cf-phone" placeholder="+91 XXXXX XXXXX" required>
             </div>
           </div>
           <div class="form-group">
             <label>Email Address</label>
-            <input type="email" placeholder="your@email.com">
+            <input type="email" id="cf-email" placeholder="your@email.com">
           </div>
           <div class="form-group">
             <label>Legal Matter</label>
-            <select>
+            <select id="cf-matter">
               <option value="">Select area of concern</option>
               <option>Civil Litigation / Property Dispute</option>
               <option>Criminal Defence / Bail</option>
@@ -1195,7 +1202,7 @@ body { font-family: var(--font-body); color: var(--text-body); background: var(-
           </div>
           <div class="form-group">
             <label>Brief Description</label>
-            <textarea placeholder="Please briefly describe your legal issue..."></textarea>
+            <textarea id="cf-message" placeholder="Please briefly describe your legal issue..."></textarea>
           </div>
           <button type="submit" class="btn-submit">Send Message</button>
         </form>
@@ -1291,11 +1298,34 @@ const observer = new IntersectionObserver((entries) => {
 }, { threshold: 0.12, rootMargin: '0px 0px -40px 0px' });
 revealEls.forEach(el => observer.observe(el));
 
-// Form handler
+// Form handler — sends query to p.tandon2014@gmail.com
 function handleSubmit(e) {
   e.preventDefault();
+
+  const name = document.getElementById('cf-name').value.trim();
+  const phone = document.getElementById('cf-phone').value.trim();
+  const email = document.getElementById('cf-email').value.trim();
+  const matter = document.getElementById('cf-matter').value;
+  const message = document.getElementById('cf-message').value.trim();
+
+  const subject = encodeURIComponent('New Legal Query from Website — ' + (matter || 'General Inquiry'));
+  const body = encodeURIComponent(
+    'New query received from website:\n\n' +
+    '━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n' +
+    'Name: ' + name + '\n' +
+    'Phone: ' + phone + '\n' +
+    'Email: ' + (email || 'Not provided') + '\n' +
+    'Legal Matter: ' + (matter || 'Not specified') + '\n' +
+    '━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n' +
+    'Description:\n' + (message || 'No additional details provided.') + '\n\n' +
+    '━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n' +
+    'Sent via Pooja Tandon & Associates Website'
+  );
+
+  window.location.href = 'mailto:p.tandon2014@gmail.com?subject=' + subject + '&body=' + body;
+
   const btn = e.target.querySelector('.btn-submit');
-  btn.textContent = '✓ Message Sent Successfully';
+  btn.textContent = '✓ Opening Email Client...';
   btn.style.background = '#2d8a4e';
   btn.style.color = '#fff';
   setTimeout(() => {
